@@ -1,19 +1,17 @@
 package main
 
 import (
-	"./checker"
-	"./notifier"
 	"fmt"
-	"github.com/joho/godotenv"
-	"log"
+	"github.com/adamkral12/go-scraper/checker"
+	"github.com/adamkral12/go-scraper/notifier"
 )
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
+	//lambda.Start(checkUrls)
+	checkUrls()
+}
 
+func checkUrls() {
 	for _, url := range getUrlsToCheck() {
 		if !(checker.IsSoldOut(url)) {
 			notifier.SendMessage(fmt.Sprintf("Tobbaco is no longer sold out! %s.", url))
@@ -32,5 +30,6 @@ func getUrlsToCheck() []string {
 		"https://www.smoking-shisha.de/fumari/714-fumari-tobacco-golden-dynasty-100g.html?search_query=fumari&results=342",
 		"https://www.smoking-shisha.de/fumari/2143-fumari-tobacco-maison-bleu-100g.html?search_query=fumari&results=342",
 		"https://www.smoking-shisha.de/fumari/2142-fumari-tobacco-lumin-freeze-100g.html?search_query=fumari&results=342",
+		"https://www.smoking-shisha.de/fumari/721-fumari-tobacco-tropical-sunset-100g.html?search_query=fumari&results=342",
 	}
 }

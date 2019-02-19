@@ -2,8 +2,6 @@ version: "2"
 
 services:
   app:
-    image: golang:1.6.1-alpine
-    volumes:
-      - .:/go/src/go-scraper
-    working_dir: /go/src/go-scraper
-    command: go run main.go
+    env_file:
+      - .env
+    build: .
