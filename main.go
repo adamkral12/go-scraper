@@ -4,32 +4,24 @@ import (
 	"fmt"
 	"github.com/adamkral12/go-scraper/checker"
 	"github.com/adamkral12/go-scraper/notifier"
+	"github.com/aws/aws-lambda-go/lambda"
+	"strings"
 )
 
 func main() {
-	//lambda.Start(checkUrls)
-	checkUrls()
+	lambda.Start(checkUrls)
 }
 
 func checkUrls() {
-	for _, url := range getUrlsToCheck() {
-		if !(checker.IsSoldOut(url)) {
-			notifier.SendMessage(fmt.Sprintf("Tobbaco is no longer sold out! %s.", url))
-		}
+	for _, url := range getUrls() {
+		soldOut, notSoldOut := checker.GetSoldOutTobaccos(url)
+		message := "%d Fumari tobaccos available out of %d tobaccos \n Sold out: \n ```%s``` \n Available: ```%s```"
+		notifier.SendMessage(fmt.Sprintf(message, len(notSoldOut), len(notSoldOut) + len(soldOut), strings.Join(soldOut, "\n"), strings.Join(notSoldOut, "\n")))
 	}
 }
 
-func getUrlsToCheck() []string {
+func getUrls() []string {
 	return []string{
-		"https://www.smoking-shisha.de/fumari/722-fumari-tobacco-original-white-bear-100g.html?search_query=fumari&results=342",
-		"https://www.smoking-shisha.de/fumari/713-fumari-tobacco-wild-beach-100g.html?search_query=fumari&results=342",
-		"https://www.smoking-shisha.de/fumari/715-fumari-tobacco-original-red-bear-100g.html?search_query=fumari&results=342",
-		"https://www.smoking-shisha.de/fumari/717-fumari-tobacco-amorosa-100g.html?search_query=fumari&results=342",
-		"https://www.smoking-shisha.de/fumari/2144-fumari-tobacco-ceylon-chi-100g.html?search_query=fumari&results=342",
-		"https://www.smoking-shisha.de/fumari/720-fumari-tobacco-tango-melange-100g.html?search_query=fumari&results=342",
-		"https://www.smoking-shisha.de/fumari/714-fumari-tobacco-golden-dynasty-100g.html?search_query=fumari&results=342",
-		"https://www.smoking-shisha.de/fumari/2143-fumari-tobacco-maison-bleu-100g.html?search_query=fumari&results=342",
-		"https://www.smoking-shisha.de/fumari/2142-fumari-tobacco-lumin-freeze-100g.html?search_query=fumari&results=342",
-		"https://www.smoking-shisha.de/fumari/721-fumari-tobacco-tropical-sunset-100g.html?search_query=fumari&results=342",
+		"https://www.smoking-shisha.de/542-fumari",
 	}
 }
