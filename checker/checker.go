@@ -21,7 +21,7 @@ func IsSoldOut(url string) bool {
 		switch {
 		case tt == html.ErrorToken:
 			// End of the document, we're done
-			return true
+			return false
 		case tt == html.StartTagToken:
 			t := htmlContent.Token()
 
@@ -31,14 +31,20 @@ func IsSoldOut(url string) bool {
 				continue
 			}
 
+			foundId := false
+			foundClass := false
 			for _, val := range t.Attr {
 				if val.Key == "id" && val.Val == "availability_value" {
-					if val.Key == "class" && val.Val == "warning_inline" {
-						return true
-					} else {
-						return false
-					}
+					foundId = true
 				}
+
+				if val.Key == "class" && val.Val == "warning_inline" {
+					foundClass = true
+				}
+			}
+
+			if foundId && foundClass {
+				return true
 			}
 		}
 	}
